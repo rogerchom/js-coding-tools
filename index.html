@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-git2.js"></script>
+  <meta charset="utf-8">
+  <title>JS Coding Tools</title>
+  <style>
+
+    body{
+      font-family: verdana, helvetica, arial, sans-serif;
+      font-size: 14px;
+    }
+
+    label{
+      display: block;
+    }
+
+    textarea {
+      width: 600px;
+      height: 400px;
+    }
+
+    .button{
+      display: inline-block;
+      height: 30px;
+      line-height:30px;
+      padding: 10px;
+      text-align:center;
+      color: white;
+      background-color:#666;
+    }
+
+    .button:hover{
+      cursor: pointer;
+      background-color: cornflowerblue;
+    }
+
+  </style>
+  <script>
+    $(function(){
+
+        // Bind buttons
+        $('.button.quoteflip').on('click', function(){
+            var input = $('textarea#input').val();
+            console.log(input);
+            $('textarea#result').val(quoteFlip(input));
+        });
+
+        $('.button.multiline').on('click', function(){
+            var input = $('textarea#input').val();
+            console.log(input);
+            $('textarea#result').val(generateMultiLineString(input));
+        });
+
+        // Active state for button press
+        $(".button").on("mousedown mouseup", function(e){
+            $(this).toggleClass( "active", e.type === "mousedown" );
+        });
+
+    });
+
+    // Flip from ' to " quotes, or vice-versa.
+    // Handles escaped quotes, though this may need some work.
+    function quoteFlip(input){
+
+        var i, output = '';
+        for(i=0; i<input.length; i++){
+          if (i > 0 && input[i-1] === '\\'){
+              output += input[i];
+          }
+          else if (input[i] === '\''){
+              output += '\"';
+          }
+          else if (input[i] === '\"'){
+              output += '\'';
+          }
+          else{
+              output += input[i];
+          }
+        }
+        return output;
+
+    }
+
+    // Take a multi-line string input and generate code that is multi-line, which is easier to read.
+    function generateMultiLineString(input){
+
+        var startIndex = 0, indexOfNewline = 0;
+        var output = '';
+
+        while (1){
+            indexOfNewline = input.indexOf('\n', startIndex);
+            if (indexOfNewline > -1){
+                output += "'" + input.substring(startIndex, indexOfNewline) + "' +\n";
+                startIndex = indexOfNewline + 1;
+            } else{
+                output += "'" + input.substring(startIndex) + "';";
+                break;
+            }
+        }
+
+        return output;
+    }
+
+  </script>
+</head>
+<body>
+  <label for='input' >Enter text:</label>
+  <textarea id='input'></textarea>
+  <div class="buttons">
+      <div class='button quoteflip'>Quote Flip</div>
+      <div class='button multiline'>String Multi-line Code Generator</div>
+  </div>
+  <label for='input' >Result:</label>
+  <textarea id='result'></textarea>
+</body>
+</html>
